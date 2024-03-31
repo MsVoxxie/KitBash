@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, codeBlock } = require('discord.js');
 const { default: OpenAI } = require('openai');
 
 const OpenAIConfig = new OpenAI({ apiKey: process.env.OPENAI_KEY });
@@ -43,6 +43,6 @@ module.exports = {
 
 		let aiReply = aiResponse.choices[0].message?.content;
 
-		await interaction.followUp({ content: aiReply, ephemeral: ephemeralToggle });
+		await interaction.followUp({ content: `${codeBlock(`Q: ${userQuestion}`)}\n${aiReply}`, ephemeral: ephemeralToggle });
 	},
 };

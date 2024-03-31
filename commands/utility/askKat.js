@@ -17,10 +17,11 @@ module.exports = {
 	},
 	async execute(client, interaction) {
 		// Ephem Check
-		const ephemeral = interaction.options.getBoolean('ephemeral') || true;
+		const ephCheck = interaction.options.getBoolean('ephemeral');
+		const ephemeralToggle = ephCheck !== null ? ephCheck : true;
 
 		// Defer, Things take time.
-		await interaction.deferReply({ ephemeral: true });
+		await interaction.deferReply({ ephemeral: ephemeralToggle });
 
 		// Grab question and setup conversation starter
 		const userQuestion = interaction.options.getString('question');
@@ -42,6 +43,6 @@ module.exports = {
 
 		let aiReply = aiResponse.choices[0].message?.content;
 
-		await interaction.followUp(aiReply);
+		await interaction.followUp({ content: aiReply, ephemeral: ephemeralToggle });
 	},
 };

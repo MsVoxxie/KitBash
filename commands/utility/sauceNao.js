@@ -30,18 +30,23 @@ module.exports = {
 		const searchImage = attachedMedia;
 
 		// Search for it.
-		const fetchedResults = await sauceNAO(searchImage, { results: 5 });
-		const firstResult = fetchedResults[0];
+		try {
+			const fetchedResults = await sauceNAO(searchImage, { results: 5 });
+			const firstResult = fetchedResults[0];
 
-		if (firstResult.similarity < 60) return interaction.followUp({ content: `[No high similarity results...](${message.url})`, ephemeral: true })
+			if (firstResult.similarity < 60) return interaction.followUp({ content: `[No high similarity results...](${message.url})`, ephemeral: true });
 
-		// Build Embed
-		const embed = new EmbedBuilder()
-			.setURL(`${firstResult.authorUrl ? firstResult.authorUrl : firstResult.url}`)
-            .setTitle('**SauceNAO**')
-			.setDescription(`I Believe I've found it!\nThe artist is: ${firstResult.authorName ? `[${firstResult.authorName}](${firstResult.authorUrl})` : `[Unable to find Artist...](${firstResult.url})`}\nThe Source is: [${firstResult.site}](${firstResult.url})\n[Sourced Image](${message.url})`)
-			.setThumbnail(firstResult.thumbnail);
+			// Build Embed
+			const embed = new EmbedBuilder()
+				.setURL(`${firstResult.authorUrl ? firstResult.authorUrl : firstResult.url}`)
+				.setTitle('**SauceNAO**')
+				.setDescription(`I Believe I've found it!\nThe artist is: ${firstResult.authorName ? `[${firstResult.authorName}](${firstResult.authorUrl})` : `[Unable to find Artist...](${firstResult.url})`}\nThe Source is: [${firstResult.site}](${firstResult.url})\n[Sourced Image](${message.url})`)
+				.setThumbnail(firstResult.thumbnail);
 
-		interaction.followUp({ embeds: [embed] });
+			interaction.followUp({ embeds: [embed] });
+
+		} catch (error) {
+			return interaction.followUp({ content: `[There was an error communicating with the server.](${message.url})`, ephemeral: true });
+		}
 	},
 };

@@ -4,16 +4,22 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('extweet')
 		.setDescription('Retrieve the raw media from a specified tweet!')
-		.addStringOption((option) => option.setName('tweet_url').setDescription('twitter url').setRequired(true)),
+		.addStringOption((option) => option.setName('tweet_url').setDescription('twitter url').setRequired(true))
+		.addBooleanOption((bool) => bool.setName('ephemeral').setDescription('Should this message be hidden? (Default True!)')),
 	options: {
 		devOnly: false,
 		disabled: false,
 	},
 	async execute(client, interaction, settings) {
+		// Ephem Check
+		const ephCheck = interaction.options.getBoolean('ephemeral');
+		const ephemeralToggle = ephCheck !== null ? ephCheck : false;
+
+		// Twit
 		const { Rettiwt } = require('rettiwt-api');
 		const twitFetch = new Rettiwt({ apiKey: process.env.TWIT_TOKEN });
 
-		await interaction.deferReply();
+		await interaction.deferReply({ ephemeral: ephemeralToggle });
 		const twitURL = interaction.options.getString('tweet_url');
 		const twitId = /\/status\/(\d+)/s.exec(twitURL);
 
@@ -29,7 +35,7 @@ module.exports = {
 					const attachment = attach;
 					fileAttachments.push(new AttachmentBuilder(attachment.url));
 				}
-				await interaction.followUp({ files: fileAttachments.map((a) => a) });
+				await interaction.followUp({ files: fileAttachments.map((a) => a), ephemeral: ephemeralToggle });
 			})
 			.catch(async (e) => {
 				console.log(e);

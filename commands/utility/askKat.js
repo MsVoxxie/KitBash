@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, codeBlock } = require('discord.js');
+const { AttachmentBuilder, SlashCommandBuilder, PermissionFlagsBits, codeBlock } = require('discord.js');
 const { default: OpenAI } = require('openai');
 
 const OpenAIConfig = new OpenAI({ apiKey: process.env.OPENAI_KEY });
@@ -32,7 +32,7 @@ module.exports = {
 
 		// Generate response
 		const aiResponse = await AI.chat.completions.create({
-			model: 'gpt-4',
+			model: 'gpt-4-0125-preview',
 			messages: conversationStarter,
 			max_tokens: 1000,
 			temperature: 0.7,
@@ -43,6 +43,14 @@ module.exports = {
 
 		let aiReply = aiResponse.choices[0].message?.content;
 
-		await interaction.followUp({ content: `${codeBlock(`Q: ${userQuestion}`)}\n${aiReply}`, ephemeral: ephemeralToggle });
+		if (aiReply.length > 2000) {
+			// If the reply length is over 2000 characters, send a txt file.
+			const buffer = Buffer.from(aiReply, 'utf8');
+			const txtFile = new AttachmentBuilder(buffer, { name: `${interaction.user.displayName}_response.txt` });
+
+			interaction.followUp({ files: [txtFile], ephemeral: ephemeralToggle });
+		} else {
+			await interaction.followUp({ content: `${codeBlock(`Q: ${userQuestion}`)}\n${aiReply}`, ephemeral: ephemeralToggle });
+		}
 	},
 };

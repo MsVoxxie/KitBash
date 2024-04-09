@@ -20,8 +20,10 @@ module.exports = {
 		let attachedMedia = null;
 
 		// Attachment
+		if (message.embeds.length) attachedMedia = message.embeds[0].data.thumbnail ? message.embeds[0].data.thumbnail.url : message.embeds[0].data.image.url;
 		if (message.attachments.size) attachedMedia = message.attachments.first().url;
-		if (message.embeds.length) attachedMedia = message.embeds[0].data.thumbnail ? message.embeds[0].data.thumbnail.url : message.embeds[0].data.url;
+
+		console.log(attachedMedia);
 
 		// Check if this message contains any images.
 		if (!attachedMedia) return interaction.followUp({ content: `[This message does not contain any images.](${message.url})` });
@@ -36,7 +38,7 @@ module.exports = {
 			const rawData = resultData.raw.data;
 
 			// Threshhold
-			if (resultData.similarity < 60) return interaction.followUp({ content: `[No high similarity results...](${message.url})` });
+			if (resultData.similarity < 70) return interaction.followUp({ content: `[No high similarity results...](${message.url})` });
 
 			let compiledData = {
 				thumbnail: resultData.thumbnail,

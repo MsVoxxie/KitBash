@@ -20,7 +20,12 @@ module.exports = {
 		let attachedMedia = null;
 
 		// Attachment
-		if (message.embeds.length) attachedMedia = message.embeds[0].data.thumbnail ? message.embeds[0].data.thumbnail.url : message.embeds[0].data.image.url;
+		if (message.embeds.length)
+			attachedMedia = message.embeds[0].data.thumbnail
+				? message.embeds[0].data.thumbnail.url
+				: message.embeds[0].data.image.url
+				? message.embeds[0].data.image.url
+				: message.embeds[0].data.url;
 		if (message.attachments.size) attachedMedia = message.attachments.first().url;
 
 		console.log(attachedMedia);

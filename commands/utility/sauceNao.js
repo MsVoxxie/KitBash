@@ -4,7 +4,7 @@ const SauceNAO = require('sagiri');
 const sauceNAO = SauceNAO(process.env.SAUCENAO);
 
 module.exports = {
-	data: new ContextMenuCommandBuilder().setName('Find Sauce Nao').setType(ApplicationCommandType.Message),
+	data: new ContextMenuCommandBuilder().setName('Search SauceNao').setType(ApplicationCommandType.Message),
 	options: {
 		devOnly: false,
 		disabled: false,
@@ -27,8 +27,6 @@ module.exports = {
 				? message.embeds[0].data.image.url
 				: message.embeds[0].data.url;
 		if (message.attachments.size) attachedMedia = message.attachments.first().url;
-
-		console.log(attachedMedia);
 
 		// Check if this message contains any images.
 		if (!attachedMedia) return interaction.followUp({ content: `[This message does not contain any images.](${message.url})` });

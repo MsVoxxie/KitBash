@@ -31,7 +31,7 @@ module.exports = {
 
 		// Generate response
 		const aiResponse = await AI.chat.completions.create({
-			model: 'gpt-4-turbo',
+			model: process.env.AI_MODEL,
 			messages: conversationStarter,
 			max_tokens: 50,
 			temperature: 0.7,

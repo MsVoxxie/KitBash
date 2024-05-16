@@ -6,10 +6,10 @@ const AI = OpenAIConfig;
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('define')
-		.setDescription("Define a word using OpenAI's GPT-4 Turbo!")
+		.setName('describe')
+		.setDescription("Describe a word using OpenAI's GPT-4 Turbo!")
 		.setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
-		.addStringOption((str) => str.setName('definition').setDescription('What are you defining?').setRequired(true)),
+		.addStringOption((str) => str.setName('description').setDescription('What are you defining?').setRequired(true)),
 	options: {
 		devOnly: false,
 		disabled: false,
@@ -19,7 +19,7 @@ module.exports = {
 		await interaction.deferReply();
 
 		// Grab question and setup conversation starter
-		const userQuestion = interaction.options.getString('definition');
+		const userQuestion = interaction.options.getString('description');
 		const conversationStarter = [
 			{
 				role: 'system',

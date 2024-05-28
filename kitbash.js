@@ -3,12 +3,12 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Discord Classes
-const { Client, Collection, GatewayIntentBits, Partials } = require('discord.js');
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
 require('events').EventEmitter.defaultMaxListeners = 16;
 
 // Define Client
 const client = new Client({
-	intents: [],
+	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
 	allowedMentions: { parse: [] },
 });
 
@@ -20,6 +20,7 @@ client.events = new Collection();
 client.color = '#3a3c56';
 
 // Run Loaders
+client.mongoose = require('./core/loaders/mongooseLoader');
 require('./core/loaders/commandLoader')(client);
 require('./core/loaders/eventLoader')(client);
 

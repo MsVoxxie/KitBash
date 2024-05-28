@@ -5,10 +5,10 @@
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "fs": "^0.0.1-security",
+    "mongoose": "^8.4.0",
     "openai": "^4.31.0",
     "path": "^0.12.7",
     "rettiwt-api": "^2.6.2",
-    "sagiri": "^3.4.0",
-    "word-definition": "^2.1.6"
+    "sagiri": "^3.4.0"
   }
 }

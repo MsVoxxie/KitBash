@@ -1,4 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { dateToLongDate } = require('../../functions/helpers/dateFormatters');
+const { trimString } = require('../../functions/helpers/stringFormatters');
 const Pin = require('../../models/pinSchema');
 
 module.exports = {
@@ -12,10 +14,10 @@ module.exports = {
 		disabled: false,
 	},
 	async execute(client, interaction) {
-		//! This entire thing fucking sucks, redo it later
+		//! Rewrite in progress
 
 		// Defer, Things take time.
-		await interaction.deferReply();
+		await interaction.deferReply({ ephemeral: true });
 
 		// Definitions
 		const user = interaction.options.getString('user') || null;
@@ -25,84 +27,39 @@ module.exports = {
 		if (user) {
 			grabbedPins = await Pin.find({ authorId: user });
 		} else {
-			grabbedPins = await Pin.find({});
+			grabbedPins = await Pin.find({ pinnedBy: interaction.user.id });
 		}
 
 		// Check if there are any pins
 		if (!grabbedPins.length) return interaction.followUp({ content: 'No pins found.' });
 
-		// Loop over the pins and create the embeds
-		const embeds = [];
-
-		for await (const pin of grabbedPins) {
-			const embed = new EmbedBuilder()
-				.setTitle(`Pin #${grabbedPins.indexOf(pin) + 1}`)
-				// .setDescription(`[Jump to Message](https://discord.com/channels/${interaction.guild.id}/${pin.channelId}/${pin.messageId})`)
-				.addFields({ name: 'Author', value: `<@${pin.authorId}>` }, { name: 'Content', value: pin.content || 'No content' })
-				.setFooter({ text: `Total Pins: ${grabbedPins.length}` })
-				.setColor(client.color);
-
-			if (pin.media.length) {
-				for (const media of pin.media) {
-					embed.setImage(media);
-				}
-			}
-			embeds.push(embed);
+		// Segment pins list into groups of 10
+		const segmentedPins = [];
+		for (let i = 0; i < grabbedPins.length; i += 10) {
+			const segment = grabbedPins.slice(i, i + 10);
+			segmentedPins.push(segment);
 		}
 
-		// Build the buttons
-		const messageButtons = new ActionRowBuilder().addComponents(
-			new ButtonBuilder().setCustomId('previous').setLabel('Previous').setStyle(ButtonStyle.Success),
-			new ButtonBuilder().setCustomId('next').setLabel('Next').setStyle(ButtonStyle.Success),
-			new ButtonBuilder().setCustomId('confirm').setLabel('Confirm').setStyle(ButtonStyle.Success),
-			new ButtonBuilder().setCustomId('delete').setLabel('Delete').setStyle(ButtonStyle.Danger)
-		);
+		// Loop over the segments and create embeds with a list per embed
+		const embeds = [];
+		let increment = 1;
+		for (const segment of segmentedPins) {
+			// Map the segment and format it
+			const formattedSegment = segment.map((pin) => {
+				const formattedDate = dateToLongDate(pin.timestamp);
+				return `__\`[Pin #${pin.pinPosition}]\`__\n**Author)** <@${pin.authorId}>\n**Pinned In)** ${pin.pinnedIn}\n**Content)** ${trimString(pin.messageContent, 50)}\n**Media Count)** ${pin.messageMedia.length}\n**Pinned)** ${formattedDate}\n**[Direct Link](${pin.directLink})**\n`;
+			});
 
-		// Respond with the embeds
-		const pinMessage = await interaction.followUp({ embeds: [embeds[0]], components: [messageButtons], fetchReply: true });
+			const embed = new EmbedBuilder()
+				.setTitle(`Page ${increment} of ${segmentedPins.length} | Total Pins: ${grabbedPins.length}`)
+				.setDescription(`${formattedSegment.join('\n')}`)
+				.setColor(client.color);
 
-		// Pagination
-		let currentPage = 0;
-		const filter = (buttonInteraction) => {
-			return buttonInteraction.user.id === interaction.user.id;
-		};
-		const collector = pinMessage.createMessageComponentCollector({ filter, time: 60000 });
+			embeds.push(embed);
+			increment++;
+		}
 
-		collector.on('collect', async (buttonInteraction) => {
-			buttonInteraction.deferUpdate();
-			switch (buttonInteraction.customId) {
-				case 'previous':
-					if (currentPage > 0) {
-						currentPage--;
-						await interaction.editReply({ embeds: [embeds[currentPage]], components: [messageButtons] });
-					}
-					break;
-
-				case 'next':
-					if (currentPage < embeds.length - 1) {
-						currentPage++;
-						await interaction.editReply({ embeds: [embeds[currentPage]], components: [messageButtons] });
-					}
-					break;
-
-				case 'confirm':
-					collector.stop();
-					await interaction.editReply({ components: [] });
-
-					break;
-				case 'delete':
-					await Pin.findOneAndDelete({ messageId: grabbedPins[currentPage].messageId });
-					grabbedPins.splice(currentPage, 1);
-					if (currentPage > 0) {
-						currentPage--;
-						await interaction.editReply({ embeds: [embeds[currentPage]], components: [messageButtons] });
-					}
-					break;
-			}
-		});
-
-		collector.on('end', async () => {
-			await interaction.editReply({ components: [] });
-		});
+		// Send the first embed
+		await interaction.followUp({ embeds: [embeds[0]] });
 	},
 };

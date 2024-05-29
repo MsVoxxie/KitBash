@@ -1,7 +1,11 @@
 const { Schema, model } = require('mongoose');
 
 const pinSchema = new Schema({
-	messageId: {
+	pinnedBy: {
+		type: String,
+		required: true,
+	},
+	pinnedIn: {
 		type: String,
 		required: true,
 	},
@@ -9,17 +13,29 @@ const pinSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	content: {
+	messageId: {
 		type: String,
 		required: true,
 	},
-	media: {
+	messageContent: {
+		type: String,
+		required: true,
+	},
+	messageMedia: {
 		type: Array,
 		default: [],
+	},
+	directLink: {
+		type: String,
+		required: true,
 	},
 	timestamp: {
 		type: Date,
 		default: Date.now,
+	},
+	pinPosition: {
+		type: Number,
+		required: true,
 	},
 });
 

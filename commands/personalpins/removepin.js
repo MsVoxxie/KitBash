@@ -9,7 +9,7 @@ module.exports = {
 	},
 	async execute(client, interaction) {
 		// Defer, Things take time.
-		await interaction.deferReply();
+		await interaction.deferReply({ ephemeral: true });
 
 		// Definitions
 		const message = interaction.targetMessage;

@@ -10,7 +10,7 @@ module.exports = {
 	},
 	async execute(client, interaction) {
 		// Defer, Things take time.
-		await interaction.deferReply();
+		await interaction.deferReply({ ephemeral: true });
 
 		// Definitions
 		const message = interaction.targetMessage;
@@ -19,22 +19,28 @@ module.exports = {
 		const check = await Pin.findOne({ messageId: message.id });
 		if (check) return interaction.followUp({ content: `[This message is already pinned](<${message.url}>)` });
 
+		// Get the total pin count
+		const totalPins = await Pin.countDocuments({});
+
 		// Check for media of some kind
 		const media = await getMedia(message);
 
 		// Create the pin.
 		const pin = new Pin({
-			messageId: message.id,
+			pinnedBy: interaction.user.id,
+			pinnedIn: interaction.guildId ? 'Guild' : 'Direct Messages',
 			authorId: message.author.id,
-			content: message.content || 'No content',
-			media: media,
+			channelId: interaction.channelId,
+			messageId: message.id,
+			messageContent: message.content || 'No content',
+			messageMedia: media,
+			directLink: message.url,
+			pinPosition: totalPins + 1,
 		});
+
 		await pin.save();
 
-		// Get the total pin count
-		const totalPins = await Pin.countDocuments({});
-
 		// Respond with total pin count
-		interaction.followUp({ content: `**${totalPins}** | [Message Saved to personal pins](<${message.url}>)` });
+		interaction.followUp({ content: `**${totalPins + 1}** | [Message Saved to personal pins](<${message.url}>)` });
 	},
 };

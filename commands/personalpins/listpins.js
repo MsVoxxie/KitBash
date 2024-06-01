@@ -1,6 +1,6 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
 const { dateToLongDate } = require('../../functions/helpers/dateFormatters');
-const { trimString } = require('../../functions/helpers/stringFormatters');
+const { cleanDiscordMarkdown, urlToMarkdown } = require('../../functions/helpers/stringFormatters');
 const Pin = require('../../models/pinSchema');
 
 module.exports = {
@@ -47,7 +47,8 @@ module.exports = {
 			// Map the segment and format it
 			const formattedSegment = segment.map((pin) => {
 				const formattedDate = dateToLongDate(pin.timestamp);
-				return `__\`[Pin #${pin.pinPosition}]\`__\n**Author)** <@${pin.authorId}>\n**Pinned In)** ${pin.pinnedIn}\n**Content)** ${trimString(pin.messageContent, 120)}\n**Media Count)** ${pin.messageMedia.length}\n**Pinned)** ${formattedDate}\n**[Direct Link](${pin.directLink})**\n`;
+				const formattedContent = cleanDiscordMarkdown(urlToMarkdown(pin.messageContent)).replace(/\n/g, ' ');
+				return `__\`[Pin #${pin.pinPosition}]\`__\n**Author)** <@${pin.authorId}>\n**Pinned In)** ${pin.pinnedIn}\n**Content)** ${formattedContent}\n**Media Count)** ${pin.messageMedia.length}\n**Pinned)** ${formattedDate}\n**[Direct Link](${pin.directLink})**\n`;
 			});
 
 			const embed = new EmbedBuilder()

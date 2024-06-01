@@ -33,10 +33,10 @@ module.exports = {
 		// Check if there are any pins
 		if (!grabbedPins.length) return interaction.followUp({ content: 'No pins found.' });
 
-		// Segment pins list into groups of 10
+		// Segment pins list into groups of 8
 		const segmentedPins = [];
-		for (let i = 0; i < grabbedPins.length; i += 10) {
-			const segment = grabbedPins.slice(i, i + 10);
+		for (let i = 0; i < grabbedPins.length; i += 8) {
+			const segment = grabbedPins.slice(i, i + 8);
 			segmentedPins.push(segment);
 		}
 
@@ -47,7 +47,7 @@ module.exports = {
 			// Map the segment and format it
 			const formattedSegment = segment.map((pin) => {
 				const formattedDate = dateToLongDate(pin.timestamp);
-				return `__\`[Pin #${pin.pinPosition}]\`__\n**Author)** <@${pin.authorId}>\n**Pinned In)** ${pin.pinnedIn}\n**Content)** ${trimString(pin.messageContent, 50)}\n**Media Count)** ${pin.messageMedia.length}\n**Pinned)** ${formattedDate}\n**[Direct Link](${pin.directLink})**\n`;
+				return `__\`[Pin #${pin.pinPosition}]\`__\n**Author)** <@${pin.authorId}>\n**Pinned In)** ${pin.pinnedIn}\n**Content)** ${trimString(pin.messageContent, 120)}\n**Media Count)** ${pin.messageMedia.length}\n**Pinned)** ${formattedDate}\n**[Direct Link](${pin.directLink})**\n`;
 			});
 
 			const embed = new EmbedBuilder()

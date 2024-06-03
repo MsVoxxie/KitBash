@@ -23,7 +23,7 @@ module.exports = {
 		const totalPins = await Pin.countDocuments({});
 
 		// Check for media of some kind
-		const media = await getMedia(message);
+		const { content, media } = await getMedia(message);
 
 		// Create the pin.
 		const pin = new Pin({
@@ -32,7 +32,7 @@ module.exports = {
 			authorId: message.author.id,
 			channelId: interaction.channelId,
 			messageId: message.id,
-			messageContent: message.content || 'No content',
+			messageContent: content || 'No content',
 			messageMedia: media,
 			directLink: message.url,
 			pinPosition: totalPins + 1,

@@ -8,6 +8,12 @@ function urlToMarkdown(string) {
 	return string.replace(urlRegex, `[LINK]($1)`);
 }
 
+function removeUrl(string) {
+	const urlRegex = new RegExp(/(https?:\/\/[^\s]+)/g);
+	if (!urlRegex.test(string)) return string;
+	return string.replace(urlRegex, '');
+}
+
 function cleanDiscordMarkdown(string) {
 	return string.replace(/([`~*_|])/g, '');
 }
@@ -15,5 +21,6 @@ function cleanDiscordMarkdown(string) {
 module.exports = {
 	trimString,
 	urlToMarkdown,
+	removeUrl,
 	cleanDiscordMarkdown,
 };

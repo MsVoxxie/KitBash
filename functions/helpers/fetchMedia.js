@@ -1,17 +1,25 @@
 const { Rettiwt } = require('rettiwt-api');
+const { cleanDiscordMarkdown, removeUrl } = require('./stringFormatters');
 const twitFetch = new Rettiwt({ apiKey: process.env.TWIT_TOKEN });
 
 async function getMedia(message) {
 	const media = [];
+	let content = cleanDiscordMarkdown(message.content);
 
 	// Twitter
 	const twitId = /\/status\/(\d+)/s.exec(message.content);
 	if (twitId) {
 		await twitFetch.tweet.details(twitId[1]).then(async (res) => {
 			if (!res) return;
-			if (!res.media) return;
-			for await (const attachment of res.media) {
-				media.push(attachment.url);
+
+			if (res.fullText) {
+				content = cleanDiscordMarkdown(removeUrl(res.fullText));
+			}
+
+			if (!res.media) {
+				for await (const attachment of res.media) {
+					media.push(attachment.url);
+				}
 			}
 		});
 	}
@@ -31,7 +39,7 @@ async function getMedia(message) {
 		}
 	}
 
-	return media;
+	return { content: content, media: media };
 }
 
 module.exports = getMedia;

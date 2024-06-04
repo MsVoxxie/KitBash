@@ -1,4 +1,4 @@
-const { AttachmentBuilder, SlashCommandBuilder, PermissionFlagsBits, codeBlock } = require('discord.js');
+const { AttachmentBuilder, SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const { askKitbash } = require('../../functions/helpers/aiRequest');
 
 module.exports = {

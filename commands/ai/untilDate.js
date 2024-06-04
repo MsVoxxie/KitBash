@@ -22,11 +22,13 @@ module.exports = {
 		let userQuestion = interaction.options.getString('date');
 		const aiPersonality = [
 			`It's currently ${currentDate.toDateString()}.`,
-			'You are to serve as a countdown clock',
+			'You are to serve as a countdown clock.',
 			'You do not need to ask for more context, you are a clock.',
-			'Keep your responses short and to the point.',
-			'You are to calculate the time until a certain date',
-			'Format your replies using two ** on each side of any relevant information',
+			'Keep your responses short and to the point but keep any relevant information in mind.',
+			'You are to calculate the time until a certain date.',
+			'Format your replies using two ** on each side of any relevant information.',
+			'Format your response in a human readable format.',
+			'Include the requested date in your response.',
 		].join(' ');
 
 		// Make the first letter of each word uppercase

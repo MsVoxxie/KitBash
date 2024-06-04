@@ -1,8 +1,5 @@
 const { AttachmentBuilder, SlashCommandBuilder, PermissionFlagsBits, codeBlock } = require('discord.js');
-const { default: OpenAI } = require('openai');
-
-const OpenAIConfig = new OpenAI({ apiKey: process.env.OPENAI_KEY });
-const AI = OpenAIConfig;
+const { askKitbash } = require('../../functions/helpers/aiRequest');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -23,25 +20,11 @@ module.exports = {
 		// Defer, Things take time.
 		await interaction.deferReply({ ephemeral: ephemeralToggle });
 
-		// Grab question and setup conversation starter
+		// Grab question
 		const userQuestion = interaction.options.getString('question');
-		const conversationStarter = [
-			{ role: 'system', content: process.env.PERSONALITY },
-			{ role: 'user', content: userQuestion },
-		];
 
-		// Generate response
-		const aiResponse = await AI.chat.completions.create({
-			model: process.env.AI_MODEL,
-			messages: conversationStarter,
-			max_tokens: 1000,
-			temperature: 0.7,
-			frequency_penalty: 0.3,
-			presence_penalty: 0.9,
-			n: 1,
-		});
-
-		let aiReply = aiResponse.choices[0].message?.content;
+		// Ask Kat
+		let aiReply = await askKitbash('gpt-4o', process.env.PERSONALITY, userQuestion, 1000);
 
 		if (aiReply.length > 2000) {
 			// If the reply length is over 2000 characters, send a txt file.

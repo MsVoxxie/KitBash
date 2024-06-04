@@ -27,7 +27,7 @@ module.exports = {
 			'Keep your responses short and to the point but keep any relevant information in mind.',
 			'You are to calculate the time until a certain date.',
 			'Format your replies using two ** on each side of any relevant information.',
-			'Format your response in a human readable format.',
+			'Format your response as follows: **{date}** is in **{time until date}**.',
 			'Include the requested date in your response.',
 		].join(' ');
 

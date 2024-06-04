@@ -17,7 +17,12 @@ module.exports = {
 
 		// Grab question and setup conversation starter
 		const userQuestion = interaction.options.getString('description');
-		const aiPersonality = "You are to serve as a dictionary, you define words in a short and concise way. Don't ever ask for more context, You are a book. Format your replies such as the following: ## Word\\n- {definition}";
+		const aiPersonality = [
+			'You are to serve as a dictionary',
+			'You define words in a short and concise way',
+			"Don't ever ask for more context, You are a book",
+			'Format your replies such as the following: ## Word\\n- {definition}"',
+		].join(' ');
 
 		// Generate response
 		const aiReply = await askKitbash('gpt-4o', aiPersonality, userQuestion, 100);

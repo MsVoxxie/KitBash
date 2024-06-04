@@ -15,12 +15,16 @@ module.exports = {
 		const message = interaction.targetMessage;
 
 		// Define the ai personality, dumb them down a bit.
-		const aiPersonality = 'You are to convert units for users. you can convert units from one to another. Format your replies such as the following: ## Conversions\\n- {conversion}';
-
+		const aiPersonality = [
+			'You are to convert units for users.',
+			'Any currency conversions should be converted to USD.',
+			'You convert units from one to another without further questions.',
+			'Format your replies such as the following: ## Conversions\\n- {fromunit → tounit}',
+		].join(' ');
 		// Generate response
-		const aiReply = await askKitbash('gpt-4o', aiPersonality, message.content, 100);
+		const aiReply = await askKitbash('gpt-4o', aiPersonality, message.content, 500);
 
-        // Send the response
+		// Send the response
 		await interaction.followUp({ content: `${aiReply}`, ephemeral: true });
 	},
 };

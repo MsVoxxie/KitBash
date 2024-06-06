@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 
-const aiThoughtsSchema = new Schema({
-	thoughts: {
+const aiMemoriesSchema = new Schema({
+	memories: {
 		type: Array,
 		default: [
 			{
@@ -18,4 +18,4 @@ const aiThoughtsSchema = new Schema({
 	},
 });
 
-module.exports = model('AiThoughts', aiThoughtsSchema);
+module.exports = model('AiMemories', aiMemoriesSchema);

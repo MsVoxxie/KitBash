@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits, codeBlock } = require('discord.js');
-const AiThoughts = require('../../models/aiThoughts');
+const AiMemories = require('../../models/aiMemories');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -21,9 +21,9 @@ module.exports = {
 		let userThought = interaction.options.getString('thought');
 
 		// Save the thought
-		await AiThoughts.findOneAndUpdate({}, { $push: { thoughts: { topic: userTopic, thought: userThought } } }, { upsert: true });
+		await AiMemories.findOneAndUpdate({}, { $push: { memories: { topic: userTopic, thought: userThought } } }, { upsert: true });
 
 		// Send the response
-		await interaction.followUp({ content: `I have remembered that **${userThought}** is about **${userTopic}**.` });
+		await interaction.followUp({ content: `I have remembered that **${userTopic}** is **${userThought}**` });
 	},
 };

@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, codeBlock } = require('discord.js');
 const { askKitbash } = require('../../functions/helpers/aiRequest');
-const AiThoughts = require('../../models/aiThoughts');
+const AiMemories = require('../../models/aiMemories');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -35,8 +35,8 @@ module.exports = {
 		].join(' ');
 
 		// Check if the user is asking for a date that has been remembered
-		const rememberedThoughts = await AiThoughts.findOne({});
-		const rememberedThought = rememberedThoughts.thoughts.find((memory) => memory.topic.toLowerCase().includes(userQuestion.toLowerCase()));
+		const rememberedThoughts = await AiMemories.findOne({});
+		const rememberedThought = rememberedThoughts.memories.find((memory) => memory.topic.toLowerCase().includes(userQuestion.toLowerCase()));
 		if (rememberedThought) aiPersonality += ` I remember that **${rememberedThought.topic}** is about **${rememberedThought.thought}**.`;
 
 		// Make the first letter of each word uppercase

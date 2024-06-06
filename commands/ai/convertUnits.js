@@ -9,7 +9,7 @@ module.exports = {
 	},
 	async execute(client, interaction, settings) {
 		// Defer, Things take time.
-		await interaction.deferReply({ ephemeral: true });
+		await interaction.deferReply();
 
 		// Definitions
 		const message = interaction.targetMessage;
@@ -25,6 +25,6 @@ module.exports = {
 		const aiReply = await askKitbash('gpt-4o', aiPersonality, message.content, 500);
 
 		// Send the response
-		await interaction.followUp({ content: `${aiReply}`, ephemeral: true });
+		await interaction.followUp({ content: `${aiReply}` });
 	},
 };

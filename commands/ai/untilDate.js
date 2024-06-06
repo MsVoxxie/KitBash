@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, codeBlock } = require('discord.js');
 const { askKitbash } = require('../../functions/helpers/aiRequest');
+const AiThoughts = require('../../models/aiThoughts');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -20,7 +21,9 @@ module.exports = {
 
 		// Definitions
 		let userQuestion = interaction.options.getString('date');
-		const aiPersonality = [
+
+		// Prepare AI personality
+		let aiPersonality = [
 			`It's currently ${currentDate.toDateString()}.`,
 			'You are to serve as a countdown clock.',
 			'You do not need to ask for more context, you are a clock.',
@@ -30,6 +33,11 @@ module.exports = {
 			'Format your response as follows: **{date}** is in **{time until date}**.',
 			'Include the requested date in your response.',
 		].join(' ');
+
+		// Check if the user is asking for a date that has been remembered
+		const rememberedThoughts = await AiThoughts.findOne({});
+		const rememberedThought = rememberedThoughts.thoughts.find((memory) => memory.topic.toLowerCase().includes(userQuestion.toLowerCase()));
+		if (rememberedThought) aiPersonality += ` I remember that **${rememberedThought.topic}** is about **${rememberedThought.thought}**.`;
 
 		// Make the first letter of each word uppercase
 		const capitalizeFirstLetter = (string) => {

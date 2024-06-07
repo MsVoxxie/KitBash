@@ -2,6 +2,10 @@ function trimString(str, max) {
 	return str.length > max ? `${str.slice(0, max - 3)}...` : str;
 }
 
+function upperFirst(string) {
+	return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function urlToMarkdown(string) {
 	const urlRegex = new RegExp(/(https?:\/\/[^\s]+)/g);
 	if (!urlRegex.test(string)) return string;
@@ -19,6 +23,7 @@ function cleanDiscordMarkdown(string) {
 }
 
 module.exports = {
+	upperFirst,
 	trimString,
 	urlToMarkdown,
 	removeUrl,

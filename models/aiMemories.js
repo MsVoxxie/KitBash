@@ -5,11 +5,15 @@ const aiMemoriesSchema = new Schema({
 		type: Array,
 		default: [
 			{
-				topic: {
+				memoryType: {
 					type: String,
 					required: true,
 				},
-				thought: {
+				memoryTopic: {
+					type: String,
+					required: true,
+				},
+				memoryData: {
 					type: String,
 					required: true,
 				},

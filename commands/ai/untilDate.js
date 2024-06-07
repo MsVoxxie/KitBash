@@ -35,9 +35,9 @@ module.exports = {
 		].join(' ');
 
 		// Check if the user is asking for a date that has been remembered
-		const rememberedThoughts = await AiMemories.findOne({});
-		const rememberedThought = rememberedThoughts.memories.find((memory) => memory.topic.toLowerCase().includes(userQuestion.toLowerCase()));
-		if (rememberedThought) aiPersonality += ` I remember that **${rememberedThought.topic}** is about **${rememberedThought.thought}**.`;
+		const rememberedThoughts = await AiMemories.findOne({ 'memories.memoryType': 'date' });
+		const rememberedThought = rememberedThoughts.memories.find((memory) => memory.memoryTopic.toLowerCase().includes(userQuestion.toLowerCase()));
+		if (rememberedThought) aiPersonality += ` I remember that **${rememberedThought.memoryTopic}** is about **${rememberedThought.memoryData}**.`;
 
 		// Make the first letter of each word uppercase
 		const capitalizeFirstLetter = (string) => {

@@ -1,4 +1,5 @@
-const { SlashCommandBuilder, PermissionFlagsBits, codeBlock } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, codeBlock, EmbedBuilder } = require('discord.js');
+const { upperFirst } = require('../../functions/helpers/stringFormatters');
 const AiMemories = require('../../models/aiMemories');
 
 module.exports = {
@@ -6,6 +7,13 @@ module.exports = {
 		.setName('remember')
 		.setDescription('Have kitbash remember something.')
 		.setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
+		.addStringOption((option) =>
+			option
+				.setName('type')
+				.setDescription('What type of memory is this?')
+				.addChoices({ name: 'Date', value: 'date' }, { name: 'Remember', value: 'remember' }, { name: 'Birthday', value: 'birthday' }, { name: 'Task', value: 'task' })
+				.setRequired(true)
+		)
 		.addStringOption((option) => option.setName('topic').setDescription('What are we remembering?').setRequired(true))
 		.addStringOption((option) => option.setName('thought').setDescription('What are we remembering about this topic?').setRequired(true)),
 	options: {
@@ -19,11 +27,18 @@ module.exports = {
 		// Definitions
 		let userTopic = interaction.options.getString('topic');
 		let userThought = interaction.options.getString('thought');
+		const memoryType = interaction.options.getString('type');
 
 		// Save the thought
-		await AiMemories.findOneAndUpdate({}, { $push: { memories: { topic: userTopic, thought: userThought } } }, { upsert: true });
+		await AiMemories.findOneAndUpdate({}, { $push: { memories: { memoryType, memoryTopic: userTopic, memoryData: userThought } } }, { upsert: true });
+
+		// Format description
+		const description = codeBlock('yaml', `Type) ${upperFirst(memoryType)}\nTopic) ${userTopic}\nMemory) ${userThought}`);
+
+		// Create embed
+		const embed = new EmbedBuilder().setTitle('Memory Saved').setDescription(description).setColor(client.color).setTimestamp();
 
 		// Send the response
-		await interaction.followUp({ content: `I have remembered that **${userTopic}** is **${userThought}**` });
+		await interaction.editReply({ embeds: [embed] });
 	},
 };

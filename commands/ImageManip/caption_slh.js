@@ -47,21 +47,24 @@ module.exports = {
 
 		// Draw caption on the top center of the image
 		const lines = wrapText(ctx, caption, width);
-		const padding = 8;
-		const lineHeight = fontSize * 1.2;
+		const padding = fontSize / 2;
+		const lineHeight = (fontSize * fontSize) / 100;
 		const textHeight = lines.length * lineHeight + 2 * padding;
 
 		//! Gif support hell
 		if (contentType === 'image/gif') {
-			const encoder = new GIFEncoder(width, height);
-			encoder.start();
-			encoder.setRepeat(0);
-			encoder.setDelay(100);
-
 			// Get the gif frames
 			const imageUrl = fetch(imageURL);
 			const imageBuffer = await imageUrl.then((res) => res.buffer());
 			const gifData = new GifReader(imageBuffer);
+			const frameDelay = gifData.frameInfo(0).delay;
+
+			// Create the encoder
+			const encoder = new GIFEncoder(width, height);
+			encoder.start();
+			encoder.setRepeat(0);
+			encoder.setTransparent();
+			encoder.setDelay(frameDelay);
 
 			// Loop through each frame
 			for (let i = 0; i < gifData.numFrames(); i++) {
@@ -77,7 +80,7 @@ module.exports = {
 				// Draw the frame
 				ctx.putImageData(imageData, 0, 0);
 
-				const finishedFrame = textMagic(ctx, lines, width, lineHeight, textHeight);
+				const finishedFrame = textMagic(ctx, lines, width, height, lineHeight, textHeight);
 				encoder.addFrame(finishedFrame);
 			}
 			encoder.finish();
@@ -86,7 +89,7 @@ module.exports = {
 			await interaction.followUp({ files: [gifAttachment] });
 		} else {
 			// Generate Image
-			textMagic(ctx, lines, width, lineHeight, textHeight);
+			textMagic(ctx, lines, width, height, lineHeight, textHeight);
 
 			// Send the image
 			const imageAttachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'caption.png' });
@@ -95,14 +98,14 @@ module.exports = {
 	},
 };
 
-const textMagic = (ctx, lines, width, lineHeight, textHeight) => {
+const textMagic = (ctx, lines, width, height, lineHeight, textHeight) => {
 	ctx.fillStyle = 'white';
 	ctx.fillRect(0, 0, width, textHeight);
 
 	// Draw text
 	ctx.fillStyle = 'black';
 	lines.forEach((line, i) => {
-		ctx.fillText(line, width / 2, -25 + (i + 1) * lineHeight);
+		ctx.fillText(line, width / 2, height / 30 + (i + 1) * lineHeight);
 	});
 	return ctx;
 };

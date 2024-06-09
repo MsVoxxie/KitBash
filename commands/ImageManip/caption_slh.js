@@ -63,7 +63,7 @@ module.exports = {
 			const encoder = new GIFEncoder(width, height);
 			encoder.start();
 			encoder.setRepeat(0);
-			encoder.setTransparent();
+			// encoder.setTransparent();
 			encoder.setDelay(frameDelay);
 
 			// Loop through each frame
@@ -105,7 +105,7 @@ const textMagic = (ctx, lines, width, height, lineHeight, textHeight) => {
 	// Draw text
 	ctx.fillStyle = 'black';
 	lines.forEach((line, i) => {
-		ctx.fillText(line, width / 2, height / 30 + (i + 1) * lineHeight);
+		ctx.fillText(line, width / 2, height / 30 - lineHeight / 3 + (i + 1) * lineHeight);
 	});
 	return ctx;
 };

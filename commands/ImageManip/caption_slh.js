@@ -33,7 +33,7 @@ module.exports = {
 		const ctx = canvas.getContext('2d');
 
 		// Register font from file
-		Canvas.GlobalFonts.registerFromPath(path.join(__dirname, '../../fonts/Roboto-Regular.ttf'), 'Roboto-Regular');
+		Canvas.GlobalFonts.registerFromPath(path.join(__dirname, '../../fonts/Roboto-Bold.ttf'), 'Roboto-Bold');
 
 		// Load image
 		const img = await Canvas.loadImage(imageURL);
@@ -41,7 +41,7 @@ module.exports = {
 
 		// Setup text
 		const fontSize = Math.min(Math.max((width, height) / 10, 16), 100);
-		ctx.font = `${fontSize}px Roboto-Regular`;
+		ctx.font = `${fontSize}px Roboto-Bold`;
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 

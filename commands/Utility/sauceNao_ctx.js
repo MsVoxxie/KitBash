@@ -10,9 +10,6 @@ module.exports = {
 		disabled: false,
 	},
 	async execute(client, interaction, settings) {
-		// Defer, Things take time.
-		await interaction.deferReply({ ephemeral: false });
-
 		// Definitions
 		const message = interaction.targetMessage;
 
@@ -29,10 +26,13 @@ module.exports = {
 		if (message.attachments.size) attachedMedia = message.attachments.first().url;
 
 		// Check if this message contains any images.
-		if (!attachedMedia) return interaction.followUp({ content: `[This message does not contain any images.](${message.url})` });
+		if (!attachedMedia) return interaction.reply({ content: `[This message does not contain any images.](${message.url})`, ephemeral: true });
 
 		// Grab the first image.
 		const searchImage = attachedMedia;
+
+		// Defer, Things take time.
+		await interaction.deferReply();
 
 		// Search for it.
 		try {

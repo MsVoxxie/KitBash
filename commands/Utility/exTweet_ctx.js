@@ -7,9 +7,6 @@ module.exports = {
 		disabled: false,
 	},
 	async execute(client, interaction, settings) {
-		// Defer, Things take time.
-		await interaction.deferReply();
-
 		// Definitions
 		const message = interaction.targetMessage;
 
@@ -19,12 +16,16 @@ module.exports = {
 
 		const twitURL = message.content;
 		const twitRegex = /[a-zA-Z0-9_]{0,15}\/status\/(\d+)/s.exec(twitURL);
-		if (!twitRegex) return interaction.followUp('This is an invalid twitter url or the tweet cannot be retrieved.');
+		if (!twitRegex) return interaction.reply({ content: 'This is an invalid twitter url or the tweet cannot be retrieved.', ephemeral: true });
 
 		// Get the twit id and user
 		const twitId = twitRegex[1];
 		const twitUser = twitRegex[0].split('/')[0];
 
+		// Defer, Things take time.
+		await interaction.deferReply();
+
+		// Fetch the tweet
 		await twitFetch.tweet
 			.details(twitId)
 			.then(async (res) => {

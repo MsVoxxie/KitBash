@@ -14,20 +14,19 @@ module.exports = {
 		// Ephem Check
 		const ephCheck = interaction.options.getBoolean('ephemeral');
 		const ephemeralToggle = ephCheck !== null ? ephCheck : false;
+		await interaction.deferReply({ ephemeral: ephemeralToggle });
 
 		// Twit
 		const { Rettiwt } = require('rettiwt-api');
 		const twitFetch = new Rettiwt({ apiKey: process.env.TWIT_TOKEN });
 
-		await interaction.deferReply({ ephemeral: ephemeralToggle });
 		const twitURL = interaction.options.getString('tweet_url');
-		// const twitId = /\/status\/(\d+)/s.exec(twitURL);
 		const twitRegex = /[a-zA-Z0-9_]{0,15}\/status\/(\d+)/s.exec(twitURL);
+		if (!twitRegex) return interaction.followUp('This is an invalid twitter url or the tweet cannot be retrieved.');
+
+		// Get the twit id and user
 		const twitId = twitRegex[1];
 		const twitUser = twitRegex[0].split('/')[0];
-
-		// Check if the tweet id is valid
-		if (!twitRegex) return interaction.followUp('This is an invalid url or the tweet cannot be retrieved!');
 
 		await twitFetch.tweet
 			.details(twitId)

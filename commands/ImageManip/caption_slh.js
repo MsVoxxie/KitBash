@@ -40,7 +40,7 @@ module.exports = {
 		ctx.drawImage(img, 0, 0, width, height);
 
 		// Setup text
-		const fontSize = Math.min(Math.max((width, height) / 16, 16), 100);
+		const fontSize = Math.min(Math.max((width, height) / 16, 16), 256);
 		ctx.font = `${fontSize}px Roboto-Bold`;
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
@@ -87,7 +87,7 @@ const textMagic = (ctx, lines, width, height, lineHeight, textHeight, fontSize) 
 	// Draw text
 	newCtx.fillStyle = 'black';
 	lines.forEach((line, i) => {
-		newCtx.fillText(line, width / 2, height / 30 - lineHeight / 3 + (i + 1) * lineHeight);
+		newCtx.fillText(line, width / 2, height / 25 - lineHeight / 3 + (i + 1) * lineHeight);
 	});
 	return { newCtx, newCanvas };
 };
@@ -137,7 +137,7 @@ const textMagicGif = async (imageURL, ctx, lines, width, height, lineHeight, tex
 		// Draw text
 		newCtx.fillStyle = 'black';
 		lines.forEach((line, i) => {
-			newCtx.fillText(line, width / 2, height / 30 - lineHeight / 3 + (i + 1) * lineHeight);
+			newCtx.fillText(line, width / 2, height / 25 - lineHeight / 3 + (i + 1) * lineHeight);
 		});
 
 		encoder.addFrame(newCtx);

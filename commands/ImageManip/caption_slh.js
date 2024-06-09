@@ -40,15 +40,15 @@ module.exports = {
 		ctx.drawImage(img, 0, 0, width, height);
 
 		// Setup text
-		const fontSize = Math.min(Math.max((width, height) / 10, 16), 100);
+		const fontSize = Math.min(Math.max((width, height) / 16, 16), 100);
 		ctx.font = `${fontSize}px Roboto-Bold`;
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 
 		// Draw caption on the top center of the image
 		const lines = wrapText(ctx, caption, width);
-		const padding = fontSize / 2;
-		const lineHeight = (fontSize * fontSize) / 100;
+		const padding = (fontSize * 1.5) / 2;
+		const lineHeight = (fontSize * fontSize) / 60;
 		const textHeight = lines.length * lineHeight + 2 * padding;
 
 		//! Gif support hell
@@ -80,7 +80,7 @@ module.exports = {
 				// Draw the frame
 				ctx.putImageData(imageData, 0, 0);
 
-				const finishedFrame = textMagic(ctx, lines, width, height, lineHeight, textHeight);
+				const finishedFrame = textMagic(ctx, lines, width, height, lineHeight, textHeight, fontSize);
 				encoder.addFrame(finishedFrame);
 			}
 			encoder.finish();
@@ -89,25 +89,37 @@ module.exports = {
 			await interaction.followUp({ files: [gifAttachment] });
 		} else {
 			// Generate Image
-			textMagic(ctx, lines, width, height, lineHeight, textHeight);
+			const generatedFrame = textMagic(ctx, lines, width, height, lineHeight, textHeight, fontSize);
 
 			// Send the image
-			const imageAttachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'caption.png' });
+			const imageAttachment = new AttachmentBuilder(generatedFrame.newCanvas.toBuffer('image/png'), { name: 'caption.png' });
 			await interaction.followUp({ files: [imageAttachment] });
 		}
 	},
 };
 
-const textMagic = (ctx, lines, width, height, lineHeight, textHeight) => {
-	ctx.fillStyle = 'white';
-	ctx.fillRect(0, 0, width, textHeight);
+const textMagic = (ctx, lines, width, height, lineHeight, textHeight, fontSize) => {
+	// Remake canvas with new height for textHeight
+	const newCanvas = Canvas.createCanvas(width, height + textHeight);
+	const newCtx = newCanvas.getContext('2d');
+
+	// Draw the original image offset by textHeight
+	newCtx.drawImage(ctx.canvas, 0, textHeight);
+
+	newCtx.font = `${fontSize}px Roboto-Bold`;
+	newCtx.textAlign = 'center';
+	newCtx.textBaseline = 'middle';
+
+	// Draw background
+	newCtx.fillStyle = 'white';
+	newCtx.fillRect(0, 0, width, textHeight);
 
 	// Draw text
-	ctx.fillStyle = 'black';
+	newCtx.fillStyle = 'black';
 	lines.forEach((line, i) => {
-		ctx.fillText(line, width / 2, height / 30 - lineHeight / 3 + (i + 1) * lineHeight);
+		newCtx.fillText(line, width / 2, height / 30 - lineHeight / 3 + (i + 1) * lineHeight);
 	});
-	return ctx;
+	return { newCtx, newCanvas };
 };
 
 const wrapText = (context, text, maxWidth) => {

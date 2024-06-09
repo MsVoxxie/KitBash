@@ -1,12 +1,15 @@
 {
   "dependencies": {
+    "@napi-rs/canvas": "^0.1.52",
     "ascii-table": "^0.0.9",
     "colors": "^1.4.0",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "fs": "^0.0.1-security",
+    "gifencoder": "^2.0.1",
     "moment": "^2.30.1",
     "mongoose": "^8.4.0",
+    "omggif": "^1.0.10",
     "openai": "^4.31.0",
     "path": "^0.12.7",
     "rettiwt-api": "^2.6.2",

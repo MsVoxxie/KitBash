@@ -33,7 +33,13 @@ module.exports = {
 				if (!res.media) return interaction.followUp({ content: `Sorry, this tweet doesn't contain any media!`, ephemeral: true });
 				for await (const attach of res.media) {
 					const attachment = attach;
-					fileAttachments.push(new AttachmentBuilder(attachment.url));
+
+					// Split the URL to get the file name
+					const splitURL = attachment.url.split('/');
+					const fileName = splitURL[splitURL.length - 1].split('?')[0];
+
+					// Push the attachment to the fileAttachments array
+					fileAttachments.push(new AttachmentBuilder(attachment.url, { name: `kitbash_${fileName}` }));
 				}
 				await interaction.followUp({ files: fileAttachments.map((a) => a), ephemeral: ephemeralToggle });
 			})

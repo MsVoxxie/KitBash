@@ -40,7 +40,7 @@ module.exports = {
 		ctx.drawImage(img, 0, 0, width, height);
 
 		// Setup text
-		const fontSize = 56;
+		const fontSize = Math.min(Math.max((width, height) / 10, 16), 100);
 		ctx.font = `${fontSize}px Roboto-Regular`;
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';

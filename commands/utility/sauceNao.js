@@ -40,16 +40,6 @@ module.exports = {
 			const resultData = fetchedResults[0];
 			const rawData = resultData.raw.data;
 
-			// Threshhold
-			if (resultData.similarity < 70) {
-				const embed = new EmbedBuilder()
-					.setTitle(`**SauceNAO (${resultData.similarity}% Match)**`)
-					.setDescription(`[No high similarity results...](${message.url})`)
-					.setColor(client.color);
-
-				return interaction.followUp({ embeds: [embed] });
-			}
-
 			let compiledData = {
 				thumbnail: resultData.thumbnail,
 				similarity: resultData.similarity,
@@ -69,13 +59,26 @@ module.exports = {
 				ext_urls: rawData.ext_urls || null,
 			};
 
+			// Threshhold
+			if (resultData.similarity < 70) {
+				// Build Embed
+				const embed = new EmbedBuilder()
+					.setTitle(`**SauceNAO (${resultData.similarity}% Match)**`)
+					.setDescription(`[No high similarity results...](${message.url})`)
+					.setThumbnail(searchImage)
+					.setColor(client.color);
+
+				return interaction.followUp({ embeds: [embed] });
+			}
+
 			// Build Embed
 			const embed = new EmbedBuilder()
 				.setTitle(`**SauceNAO (${compiledData.similarity}% Match)**`)
+				.setDescription(`Original Discord message can be found [Here](${message.url})`)
+				.addFields({ name: 'Ext Urls', value: compiledData.ext_urls.map((u) => u).join('\n') })
 				.setThumbnail(compiledData.thumbnail)
 				.setColor(client.color)
-				.setDescription(`Original Discord message can be found [Here](${message.url})`)
-				.addFields({ name: 'Ext Urls', value: compiledData.ext_urls.map((u) => u).join('\n') });
+				.setTimestamp();
 
 			// Title
 			if (compiledData.title) embed.addFields({ name: 'Title', value: `${compiledData.title}`, inline: true });
@@ -99,10 +102,15 @@ module.exports = {
 			// Source
 			if (compiledData.source) embed.addFields({ name: 'Source', value: `${compiledData.source}`, inline: false });
 
+			// Send the embed
 			interaction.followUp({ embeds: [embed] });
 		} catch (error) {
 			console.log(error);
-			const embed = new EmbedBuilder().setTitle(`**SauceNAO Error**`).setDescription(`[An error occurred. Please try again.](${message.url})`).setColor(client.color);
+			const embed = new EmbedBuilder()
+				.setTitle(`**SauceNAO Error**`)
+				.setDescription(`[An error occurred. Please try again.](${message.url})`)
+				.setColor(client.color)
+				.setTimestamp();
 			return interaction.followUp({ embeds: [embed] });
 		}
 	},

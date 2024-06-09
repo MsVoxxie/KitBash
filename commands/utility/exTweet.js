@@ -21,12 +21,16 @@ module.exports = {
 
 		await interaction.deferReply({ ephemeral: ephemeralToggle });
 		const twitURL = interaction.options.getString('tweet_url');
-		const twitId = /\/status\/(\d+)/s.exec(twitURL);
+		// const twitId = /\/status\/(\d+)/s.exec(twitURL);
+		const twitRegex = /[a-zA-Z0-9_]{0,15}\/status\/(\d+)/s.exec(twitURL);
+		const twitId = twitRegex[1];
+		const twitUser = twitRegex[0].split('/')[0];
 
-		if (!twitId) return interaction.followUp('This is an invalid url or the tweet cannot be retrieved!');
+		// Check if the tweet id is valid
+		if (!twitRegex) return interaction.followUp('This is an invalid url or the tweet cannot be retrieved!');
 
 		await twitFetch.tweet
-			.details(twitId[1])
+			.details(twitId)
 			.then(async (res) => {
 				if (!res) return interaction.followUp({ content: 'There was an error retrieving this tweet.\nIt may be considered NSFW.', ephemeral: true });
 				const fileAttachments = [];
@@ -34,12 +38,12 @@ module.exports = {
 				for await (const attach of res.media) {
 					const attachment = attach;
 
-					// Split the URL to get the file name
-					const splitURL = attachment.url.split('/');
-					const fileName = splitURL[splitURL.length - 1].split('?')[0];
+					// Convert the attachment url to a file name
+					const fileExt = attachment.url.split('/').pop().split('?')[0].split('.')[1];
+					const fileName = `kitbash_${twitUser}_${twitId}.${fileExt}`;
 
 					// Push the attachment to the fileAttachments array
-					fileAttachments.push(new AttachmentBuilder(attachment.url, { name: `kitbash_${fileName}` }));
+					fileAttachments.push(new AttachmentBuilder(attachment.url, { name: fileName }));
 				}
 				await interaction.followUp({ files: fileAttachments.map((a) => a), ephemeral: ephemeralToggle });
 			})

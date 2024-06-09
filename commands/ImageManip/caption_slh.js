@@ -53,39 +53,9 @@ module.exports = {
 
 		//! Gif support hell
 		if (contentType === 'image/gif') {
-			// Get the gif frames
-			const imageUrl = fetch(imageURL);
-			const imageBuffer = await imageUrl.then((res) => res.buffer());
-			const gifData = new GifReader(imageBuffer);
-			const frameDelay = gifData.frameInfo(0).delay;
-
-			// Create the encoder
-			const encoder = new GIFEncoder(width, height);
-			encoder.start();
-			encoder.setRepeat(0);
-			// encoder.setTransparent();
-			encoder.setDelay(frameDelay);
-
-			// Loop through each frame
-			for (let i = 0; i < gifData.numFrames(); i++) {
-				// Get the frame
-				const frameInfo = gifData.frameInfo(i);
-				const frameData = Buffer.alloc(frameInfo.width * frameInfo.height * 4);
-				gifData.decodeAndBlitFrameRGBA(i, frameData);
-
-				// Put the frame data on the canvas
-				const imageData = ctx.createImageData(frameInfo.width, frameInfo.height);
-				imageData.data.set(frameData);
-
-				// Draw the frame
-				ctx.putImageData(imageData, 0, 0);
-
-				const finishedFrame = textMagic(ctx, lines, width, height, lineHeight, textHeight, fontSize);
-				encoder.addFrame(finishedFrame);
-			}
-			encoder.finish();
+			const generatedGif = await textMagicGif(imageURL, ctx, lines, width, height, lineHeight, textHeight, fontSize);
 			// Send the gif
-			const gifAttachment = new AttachmentBuilder(encoder.out.getData(), { name: 'caption.gif' });
+			const gifAttachment = new AttachmentBuilder(generatedGif, { name: 'caption.gif' });
 			await interaction.followUp({ files: [gifAttachment] });
 		} else {
 			// Generate Image
@@ -120,6 +90,61 @@ const textMagic = (ctx, lines, width, height, lineHeight, textHeight, fontSize) 
 		newCtx.fillText(line, width / 2, height / 30 - lineHeight / 3 + (i + 1) * lineHeight);
 	});
 	return { newCtx, newCanvas };
+};
+
+const textMagicGif = async (imageURL, ctx, lines, width, height, lineHeight, textHeight, fontSize) => {
+	// Remake canvas with new height for textHeight
+	const newCanvas = Canvas.createCanvas(width, height + textHeight);
+	const newCtx = newCanvas.getContext('2d');
+
+	// Draw the original image offset by textHeight
+	newCtx.drawImage(ctx.canvas, 0, textHeight);
+
+	newCtx.font = `${fontSize}px Roboto-Bold`;
+	newCtx.textAlign = 'center';
+	newCtx.textBaseline = 'middle';
+
+	// Get the gif frames
+	const imageUrl = fetch(imageURL);
+	const imageBuffer = await imageUrl.then((res) => res.buffer());
+	const gifData = new GifReader(imageBuffer);
+	const frameDelay = gifData.frameInfo(0).delay;
+
+	// Create the encoder
+	const encoder = new GIFEncoder(width, height);
+	encoder.start();
+	encoder.setRepeat(0);
+	encoder.setDelay(frameDelay);
+
+	// Loop through each frame
+	for (let i = 0; i < gifData.numFrames(); i++) {
+		// Get the frame
+		const frameInfo = gifData.frameInfo(i);
+		const frameData = Buffer.alloc(frameInfo.width * frameInfo.height * 4);
+		gifData.decodeAndBlitFrameRGBA(i, frameData);
+
+		// Put the frame data on the canvas
+		const imageData = ctx.createImageData(frameInfo.width, frameInfo.height);
+		imageData.data.set(frameData);
+
+		// Draw the frame
+		newCtx.putImageData(imageData, 0, 0);
+
+		// Draw background
+		newCtx.fillStyle = 'white';
+		newCtx.fillRect(0, 0, width, textHeight);
+
+		// Draw text
+		newCtx.fillStyle = 'black';
+		lines.forEach((line, i) => {
+			newCtx.fillText(line, width / 2, height / 30 - lineHeight / 3 + (i + 1) * lineHeight);
+		});
+
+		encoder.addFrame(newCtx);
+	}
+	encoder.finish();
+
+	return encoder.out.getData();
 };
 
 const wrapText = (context, text, maxWidth) => {

@@ -40,15 +40,15 @@ module.exports = {
 		ctx.drawImage(img, 0, 0, width, height);
 
 		// Setup text
-		const fontSize = Math.min(Math.max((width, height) / 16, 16), 256);
+		const fontSize = 48;
 		ctx.font = `${fontSize}px Roboto-Bold`;
 		ctx.textAlign = 'center';
 		ctx.textBaseline = 'middle';
 
 		// Draw caption on the top center of the image
 		const lines = wrapText(ctx, caption, width);
-		const padding = (fontSize * 1.5) / 3;
-		const lineHeight = (fontSize * fontSize) / 25;
+		const padding = 6;
+		const lineHeight = fontSize * 1.2;
 		const textHeight = lines.length * lineHeight + 2 * padding;
 
 		//! Gif support hell
@@ -87,7 +87,7 @@ const textMagic = (ctx, lines, width, height, lineHeight, textHeight, fontSize) 
 	// Draw text
 	newCtx.fillStyle = 'black';
 	lines.forEach((line, i) => {
-		newCtx.fillText(line, width / 2, height / 25 - lineHeight / 1.5 + (i + 1) * lineHeight);
+		newCtx.fillText(line, width / 2, height / 25 - lineHeight / 1.1 + (i + 1) * lineHeight);
 	});
 	return { newCtx, newCanvas };
 };

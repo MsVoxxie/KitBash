@@ -47,8 +47,8 @@ module.exports = {
 
 		// Draw caption on the top center of the image
 		const lines = wrapText(ctx, caption, width);
-		const padding = (fontSize * 1.5) / 2;
-		const lineHeight = (fontSize * fontSize) / 60;
+		const padding = (fontSize * 1.5) / 3;
+		const lineHeight = (fontSize * fontSize) / 25;
 		const textHeight = lines.length * lineHeight + 2 * padding;
 
 		//! Gif support hell
@@ -87,7 +87,7 @@ const textMagic = (ctx, lines, width, height, lineHeight, textHeight, fontSize) 
 	// Draw text
 	newCtx.fillStyle = 'black';
 	lines.forEach((line, i) => {
-		newCtx.fillText(line, width / 2, height / 25 - lineHeight / 3 + (i + 1) * lineHeight);
+		newCtx.fillText(line, width / 2, height / 25 - lineHeight / 1.5 + (i + 1) * lineHeight);
 	});
 	return { newCtx, newCanvas };
 };

@@ -31,7 +31,7 @@ module.exports = {
 			'You are to calculate the time until a certain date.',
 			'Format your replies using two ** on each side of any relevant information.',
 			'Format your response as follows: **{date}** is in **{time until date}**.',
-			'Include the requested date in your response.',
+			'Include the requested date and the name of what is being requested in your response.',
 		].join(' ');
 
 		// Check if the user is asking for a date that has been remembered

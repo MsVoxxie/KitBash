@@ -2,7 +2,7 @@ const { ContextMenuCommandBuilder, ApplicationCommandType } = require('discord.j
 const Pin = require('../../models/pinSchema');
 
 module.exports = {
-	data: new ContextMenuCommandBuilder().setName('Remove Pin').setType(ApplicationCommandType.Message),
+	data: new ContextMenuCommandBuilder().setName('[Remove Pin]').setType(ApplicationCommandType.Message),
 	options: {
 		devOnly: false,
 		disabled: false,

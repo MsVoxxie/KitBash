@@ -3,7 +3,7 @@ const getMedia = require('../../functions/helpers/fetchMedia');
 const Pin = require('../../models/pinSchema');
 
 module.exports = {
-	data: new ContextMenuCommandBuilder().setName('Create Pin').setType(ApplicationCommandType.Message),
+	data: new ContextMenuCommandBuilder().setName('[Create Pin]').setType(ApplicationCommandType.Message),
 	options: {
 		devOnly: false,
 		disabled: false,

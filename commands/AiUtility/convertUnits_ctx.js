@@ -20,6 +20,7 @@ module.exports = {
 			'Any currency conversions should be converted to USD.',
 			'You convert units from one to another without further questions.',
 			'Format your replies such as the following: ## Conversions\\n- {fromunit → tounit}',
+			'If there aren\'t any conversions, reply with "No conversions found."',
 		].join(' ');
 		// Generate response
 		const aiReply = await askKitbash('gpt-4o', aiPersonality, message.content, 500);

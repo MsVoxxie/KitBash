@@ -1,9 +1,10 @@
-const { SlashCommandBuilder, AttachmentBuilder } = require('discord.js');
+const { SlashCommandBuilder, AttachmentBuilder, InteractionContextType } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('extweet')
 		.setDescription('Retrieve the raw media from a specified tweet!')
+		.setContexts([InteractionContextType.Guild, InteractionContextType.PrivateChannel])
 		.addStringOption((option) => option.setName('tweet_url').setDescription('twitter url').setRequired(true))
 		.addBooleanOption((bool) => bool.setName('ephemeral').setDescription('Should this message be hidden? (Default True!)')),
 	options: {

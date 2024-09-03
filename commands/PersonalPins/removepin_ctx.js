@@ -1,8 +1,11 @@
-const { ContextMenuCommandBuilder, ApplicationCommandType } = require('discord.js');
+const { ContextMenuCommandBuilder, ApplicationCommandType, InteractionContextType } = require('discord.js');
 const Pin = require('../../models/pinSchema');
 
 module.exports = {
-	data: new ContextMenuCommandBuilder().setName('[Remove Pin]').setType(ApplicationCommandType.Message),
+	data: new ContextMenuCommandBuilder()
+		.setName('[Remove Pin]')
+		.setContexts([InteractionContextType.Guild, InteractionContextType.PrivateChannel])
+		.setType(ApplicationCommandType.Message),
 	options: {
 		devOnly: false,
 		disabled: false,

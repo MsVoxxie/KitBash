@@ -1,7 +1,11 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, blockQuote, codeBlock } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, blockQuote, codeBlock, InteractionContextType } = require('discord.js');
 
 module.exports = {
-	data: new SlashCommandBuilder().setName('ping').setDescription('Replies with Pong!').setDefaultMemberPermissions(PermissionFlagsBits.SendMessages),
+	data: new SlashCommandBuilder()
+		.setName('ping')
+		.setDescription('Replies with Pong!')
+		.setContexts([InteractionContextType.Guild, InteractionContextType.PrivateChannel])
+		.setDefaultMemberPermissions(PermissionFlagsBits.SendMessages),
 	options: {
 		devOnly: false,
 		disabled: false,

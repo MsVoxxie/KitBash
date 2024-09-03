@@ -1,8 +1,11 @@
-const { ContextMenuCommandBuilder, ApplicationCommandType } = require('discord.js');
+const { ContextMenuCommandBuilder, ApplicationCommandType, InteractionContextType } = require('discord.js');
 const { askKitbash } = require('../../functions/helpers/aiRequest');
 
 module.exports = {
-	data: new ContextMenuCommandBuilder().setName('Convert Units').setType(ApplicationCommandType.Message),
+	data: new ContextMenuCommandBuilder()
+		.setName('Convert Units')
+		.setContexts([InteractionContextType.Guild, InteractionContextType.PrivateChannel])
+		.setType(ApplicationCommandType.Message),
 	options: {
 		devOnly: false,
 		disabled: false,

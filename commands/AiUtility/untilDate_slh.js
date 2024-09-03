@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, InteractionContextType } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, InteractionContextType, ApplicationIntegrationType } = require('discord.js');
 const { askKitbash } = require('../../functions/helpers/aiRequest');
 const AiMemories = require('../../models/aiMemories');
 
@@ -7,6 +7,7 @@ module.exports = {
 		.setName('countdown')
 		.setDescription('How long until a certain date?')
 		.setContexts([InteractionContextType.Guild, InteractionContextType.PrivateChannel])
+		.setIntegrationTypes([ApplicationIntegrationType.UserInstall])
 		.setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
 		.addStringOption((str) => str.setName('date').setDescription('Which date are we checking?').setRequired(true)),
 	options: {

@@ -1,4 +1,4 @@
-const { ContextMenuCommandBuilder, ApplicationCommandType, EmbedBuilder, InteractionContextType } = require('discord.js');
+const { ContextMenuCommandBuilder, ApplicationCommandType, EmbedBuilder, InteractionContextType, ApplicationIntegrationType } = require('discord.js');
 
 const SauceNAO = require('sagiri');
 const sauceNAO = SauceNAO(process.env.SAUCENAO);
@@ -7,6 +7,7 @@ module.exports = {
 	data: new ContextMenuCommandBuilder()
 		.setName('Search SauceNao')
 		.setContexts([InteractionContextType.Guild, InteractionContextType.PrivateChannel])
+		.setIntegrationTypes([ApplicationIntegrationType.UserInstall])
 		.setType(ApplicationCommandType.Message),
 	options: {
 		devOnly: false,

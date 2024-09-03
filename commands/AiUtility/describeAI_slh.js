@@ -1,4 +1,4 @@
-const { AttachmentBuilder, SlashCommandBuilder, PermissionFlagsBits, InteractionContextType } = require('discord.js');
+const { AttachmentBuilder, SlashCommandBuilder, PermissionFlagsBits, InteractionContextType, ApplicationIntegrationType } = require('discord.js');
 const { askKitbash } = require('../../functions/helpers/aiRequest');
 
 module.exports = {
@@ -6,6 +6,7 @@ module.exports = {
 		.setName('describe')
 		.setDescription("Describe a word using OpenAI's GPT-4 Turbo!")
 		.setContexts([InteractionContextType.Guild, InteractionContextType.PrivateChannel])
+		.setIntegrationTypes([ApplicationIntegrationType.UserInstall])
 		.setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
 		.addStringOption((str) => str.setName('description').setDescription('What are you defining?').setRequired(true)),
 	options: {

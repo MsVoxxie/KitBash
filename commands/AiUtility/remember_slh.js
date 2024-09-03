@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, codeBlock, EmbedBuilder, InteractionContextType } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, codeBlock, EmbedBuilder, InteractionContextType, ApplicationIntegrationType } = require('discord.js');
 const { upperFirst } = require('../../functions/helpers/stringFormatters');
 const AiMemories = require('../../models/aiMemories');
 
@@ -7,6 +7,7 @@ module.exports = {
 		.setName('remember')
 		.setDescription('Have kitbash remember something.')
 		.setContexts([InteractionContextType.Guild, InteractionContextType.PrivateChannel])
+		.setIntegrationTypes([ApplicationIntegrationType.UserInstall])
 		.setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
 		.addStringOption((option) =>
 			option

@@ -1,4 +1,13 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionContextType } = require('discord.js');
+const {
+	SlashCommandBuilder,
+	PermissionFlagsBits,
+	EmbedBuilder,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	InteractionContextType,
+	ApplicationIntegrationType,
+} = require('discord.js');
 const { serpapiImageSearch } = require('../../functions/fetch/webSearch');
 
 module.exports = {
@@ -6,6 +15,7 @@ module.exports = {
 		.setName('isearch')
 		.setDescription('Search google images for a query.')
 		.setContexts([InteractionContextType.Guild, InteractionContextType.PrivateChannel])
+		.setIntegrationTypes([ApplicationIntegrationType.UserInstall])
 		.setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
 		.addStringOption((option) => option.setName('query').setDescription('The query to search for').setRequired(true)),
 	options: {

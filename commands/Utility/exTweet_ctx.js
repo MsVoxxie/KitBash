@@ -1,9 +1,10 @@
-const { ContextMenuCommandBuilder, ApplicationCommandType, AttachmentBuilder, InteractionContextType } = require('discord.js');
+const { ContextMenuCommandBuilder, ApplicationCommandType, AttachmentBuilder, InteractionContextType, ApplicationIntegrationType } = require('discord.js');
 
 module.exports = {
 	data: new ContextMenuCommandBuilder()
 		.setName('exTweet')
 		.setContexts([InteractionContextType.Guild, InteractionContextType.PrivateChannel])
+		.setIntegrationTypes([ApplicationIntegrationType.UserInstall])
 		.setType(ApplicationCommandType.Message),
 	options: {
 		devOnly: false,

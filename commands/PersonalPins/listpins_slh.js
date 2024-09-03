@@ -1,4 +1,13 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, InteractionContextType } = require('discord.js');
+const {
+	SlashCommandBuilder,
+	PermissionFlagsBits,
+	EmbedBuilder,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	InteractionContextType,
+	ApplicationIntegrationType,
+} = require('discord.js');
 const { dateToLongDate } = require('../../functions/helpers/dateFormatters');
 const { cleanDiscordMarkdown, urlToMarkdown } = require('../../functions/helpers/stringFormatters');
 const Pin = require('../../models/pinSchema');
@@ -8,6 +17,7 @@ module.exports = {
 		.setName('listpins')
 		.setDescription('List all currently saved pins')
 		.setContexts([InteractionContextType.Guild, InteractionContextType.PrivateChannel])
+		.setIntegrationTypes([ApplicationIntegrationType.UserInstall])
 		.setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
 		.addStringOption((option) => option.setName('user').setDescription('The user to list pins for').setRequired(false)),
 	options: {

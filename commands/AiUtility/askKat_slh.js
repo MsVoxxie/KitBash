@@ -1,4 +1,4 @@
-const { AttachmentBuilder, SlashCommandBuilder, PermissionFlagsBits, codeBlock, InteractionContextType } = require('discord.js');
+const { AttachmentBuilder, SlashCommandBuilder, PermissionFlagsBits, codeBlock, InteractionContextType, ApplicationIntegrationType } = require('discord.js');
 const { askKitbash } = require('../../functions/helpers/aiRequest');
 
 module.exports = {
@@ -6,6 +6,7 @@ module.exports = {
 		.setName('askkat')
 		.setDescription("Ask Me a question, I'll answer the best I can!")
 		.setContexts([InteractionContextType.Guild, InteractionContextType.PrivateChannel])
+		.setIntegrationTypes([ApplicationIntegrationType.UserInstall])
 		.setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
 		.addStringOption((str) => str.setName('question').setDescription('What to ask Kat?').setRequired(true))
 		.addBooleanOption((bool) => bool.setName('ephemeral').setDescription('Should this message be hidden? (Default True!)')),

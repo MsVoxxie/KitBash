@@ -28,12 +28,12 @@ module.exports = {
 		if (weatherData.error) return interaction.reply({ content: 'Invalid location provided.', ephemeral: true });
 
 		// Combine all of the data into a single string for the ai model to read, only use fareinheit for now.
-		const weatherDataAi = `Temp ${weatherData.current.temp_f}\nFeels Like ${weatherData.current.feelslike_f}\nHumidity ${weatherData.current.humidity}\nVisibility miles ${weatherData.current.vis_miles}`;
+		const weatherDataAi = `Location ${locale}\nTemp ${weatherData.current.temp_f}\nFeels Like ${weatherData.current.feelslike_f}\nHumidity ${weatherData.current.humidity}\nVisibility miles ${weatherData.current.vis_miles}`;
 
 		console.log(weatherDataAi);
 		
 		// Define the personality as a frat boy who knows just enough to be dangerous.
-		const personality = 'You are a dumb frat boy who barely understands the weather who is trying to impress a girl by talking about the weather. Keep your answers dumb and short. Do not say pretty sweet or anything similar at the end.';
+		const personality = 'You are a dumb frat boy who barely understands the weather who is trying to impress a girl by talking about the weather. Keep your answers dumb and short. Use raw numbers as little as possible, rely on your words. Do not say pretty sweet or anything similar at the end.';
 
 		// Ask the AI
 		let aiReply = await askKitbash('gpt-4o', personality, weatherDataAi, 1000);

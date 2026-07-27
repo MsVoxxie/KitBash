@@ -20,7 +20,7 @@ module.exports = {
 		.addStringOption((option) => option.setName('thought').setDescription('What are we remembering about this topic?').setRequired(true)),
 	options: {
 		devOnly: false,
-		disabled: false,
+		disabled: true,
 	},
 	async execute(client, interaction) {
 		// Defer, Things take time.

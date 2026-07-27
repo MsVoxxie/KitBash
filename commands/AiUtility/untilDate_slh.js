@@ -12,7 +12,7 @@ module.exports = {
 		.addStringOption((str) => str.setName('date').setDescription('Which date are we checking?').setRequired(true)),
 	options: {
 		devOnly: false,
-		disabled: false,
+		disabled: true,
 	},
 	async execute(client, interaction) {
 		// Defer, Things take time.

@@ -12,7 +12,7 @@ module.exports = {
 		.addBooleanOption((bool) => bool.setName('ephemeral').setDescription('Should this message be hidden? (Default True!)')),
 	options: {
 		devOnly: false,
-		disabled: false,
+		disabled: true,
 	},
 	async execute(client, interaction) {
 		// Ephem Check

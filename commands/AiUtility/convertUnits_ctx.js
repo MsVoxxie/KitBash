@@ -9,7 +9,7 @@ module.exports = {
 		.setType(ApplicationCommandType.Message),
 	options: {
 		devOnly: false,
-		disabled: false,
+		disabled: true,
 	},
 	async execute(client, interaction, settings) {
 		// Defer, Things take time.

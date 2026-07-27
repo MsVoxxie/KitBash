@@ -11,7 +11,7 @@ module.exports = {
 		.addStringOption((str) => str.setName('description').setDescription('What are you defining?').setRequired(true)),
 	options: {
 		devOnly: false,
-		disabled: false,
+		disabled: true,
 	},
 	async execute(client, interaction) {
 		// Defer, Things take time.

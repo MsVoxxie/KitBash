@@ -1,5 +1,6 @@
 const { Rettiwt } = require('rettiwt-api');
 const { cleanDiscordMarkdown, removeUrl } = require('./stringFormatters');
+const { getTweetMediaFallback, pickBestDiscordMedia } = require('../fetch/tweetMediaFallback');
 const twitFetch = new Rettiwt({ apiKey: process.env.TWIT_TOKEN });
 
 async function getMedia(message) {
@@ -7,21 +8,40 @@ async function getMedia(message) {
 	let content = cleanDiscordMarkdown(message.content);
 
 	// Twitter
-	const twitId = /\/status\/(\d+)/s.exec(message.content);
+	const twitMatch = /(?:x|twitter)\.com\/([a-zA-Z0-9_]{1,15})\/status\/(\d+)/s.exec(message.content);
+	const twitId = twitMatch ? twitMatch[2] : null;
+	const twitUser = twitMatch ? twitMatch[1] : null;
 	if (twitId) {
-		await twitFetch.tweet.details(twitId[1]).then(async (res) => {
+		let tweetMediaFound = false;
+		try {
+			const res = await twitFetch.tweet.details(twitId);
 			if (!res) return;
 
 			if (res.fullText) {
 				content = cleanDiscordMarkdown(removeUrl(res.fullText));
 			}
 
-			if (!res.media) {
-				for await (const attachment of res.media) {
-					media.push(attachment.url);
+			if (Array.isArray(res.media) && res.media.length) {
+				const candidateMedia = res.media.map((m) => m?.url).filter(Boolean);
+				const bestMedia = pickBestDiscordMedia(candidateMedia);
+				if (bestMedia) {
+					media.push(bestMedia);
+					tweetMediaFound = true;
 				}
 			}
-		});
+		} catch (e) {
+			const fallback = await getTweetMediaFallback(twitUser, twitId);
+			if (fallback.fullText) {
+				content = cleanDiscordMarkdown(removeUrl(fallback.fullText));
+			}
+			const bestMedia = pickBestDiscordMedia(fallback.media);
+			if (bestMedia) {
+				media.push(bestMedia);
+				tweetMediaFound = true;
+			}
+		}
+
+		if (tweetMediaFound) return { content: content, media: media };
 	}
 
 	// Attachments
